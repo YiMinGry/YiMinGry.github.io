@@ -199,19 +199,20 @@
     <div class="input-form">
         <h2>제품 데이터 입력</h2>
         <p>아래 입력창에 상품 데이터를 복사해 붙여넣으세요. (예시가 자동으로 입력되어 있습니다.)</p>
-        <textarea id="productDataInput" placeholder='곰돌이(30p)
+        <textarea id="productDataInput" placeholder='랜덤박스-포근실
 
-귀여운 곰돌이 모양의 포인트 장식입니다.
-다양한 뜨개 소품에 달아 완성도를 높여보세요.
-반짝이는 합금 소재로 고급스러움을 더해줍니다.
-30개가 한 세트로 구성되어 넉넉하게 사용할 수 있습니다.🧶이런 분께 추천드려요!
-직접 만든 뜨개 작품에 특별한 포인트를 주고 싶으신 분
-아이들을 위한 인형이나 소품을 만드시는 분
-판매용 작품의 퀄리티를 한 단계 높이고 싶으신 분
+어떤 색이 나올지 두근거리는 설렘, 랜덤박스-포근실을 만나보세요.
+이름처럼 포근하고 부드러운 감촉을 자랑하는 아크릴 100% 실입니다.
+매번 새로운 컬러 조합으로 나만의 특별한 작품을 만들 수 있습니다.
+가성비와 재미를 동시에 잡아 뜨개질의 즐거움을 더해줄 거예요.🧶이런 분께 추천드려요!
+- 어떤 색을 고를지 고민되는 분, 새로운 색 조합에 도전하고 싶은 분
+- 가성비 좋은 실로 다양한 소품이나 블랭킷을 만들고 싶은 분
+- 부드러운 감촉의 실로 아이들 용품이나 인형을 만들고 싶은 분
 
-- 상품 상세 정보 - 🧰 구성🔹소재 : 합금🌟 뚱이’s 뜨개팁 🐷✂️
-작품을 완성한 후, 곰돌이 장식의 고리에 돗바늘이나 코바늘을 이용해 실을 연결해 보세요.
-가방, 파우치, 목도리 끝단 등 원하는 위치에 단단히 묶어주면 사랑스러운 나만의 작품이 완성됩니다.'></textarea><br>
+- 상품 상세 정보 - 🧰 구성🔹합수 : 1합🧵 컬러 라인업
+3색 랜덤🌟 뚱이’s 뜨개팁 🐷✂️
+추천바늘: 코바늘 4~5호, 대바늘 4~5mm
+이 실은 촉감이 부드러워 아기용품, 인형, 블랭킷 등에 사용하기 좋아요. 같은 색상 계열로 여러 겹을 합사해 뜨면 오묘하고 예쁜 색감이 나옵니다.'></textarea><br>
         <button onclick="generateAndDownloadHtml()">HTML 생성 및 다운로드</button>
     </div>
 
@@ -237,7 +238,7 @@
             <div class="color-grid">${colors}</div>
         </div>
 
-        <div class="section" id="tipsSection">
+        <div class="section">
             <div class="knitting-tip">
                 <h3 class="knitting-tip-title">${tipsTitle}</h3>
                 <p>${tipsContent}</p>
@@ -291,24 +292,27 @@
 
             // 뜨개팁
             const tipsContent = findSectionContent('🌟 뚱이’s 뜨개팁 🐷✂️', '');
-            const tipsTitle = tipsContent ? lines.find(line => line.includes('🌟 뚱이’s 뜨개팁 🐷✂️')).trim() : '';
-            const tipsText = tipsContent ? tipsContent.replace(tipsTitle, '').trim() : '';
-
+            let tipsTitle = '🌟 뚱이’s 뜨개팁 🐷✂️';
+            let tipsText = '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
+            if (tipsContent) {
+                const tipsLines = tipsContent.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                tipsText = tipsLines.join('<br>');
+            }
+            
             // 템플릿 채우기
             let finalHtml = document.getElementById('productTemplate').innerHTML;
             finalHtml = finalHtml
-                .replace('${title}', title)
-                .replace('${intro}', intro)
-                .replace('${recommendations}', recommendationsHtml)
-                .replace('${details}', detailsHtml)
-                .replace('${colors}', colorsHtml)
-                .replace('${tipsTitle}', tipsTitle)
-                .replace('${tipsContent}', tipsText.replace(/\n/g, '<br>'));
+                .replace(/\${title}/g, title)
+                .replace(/\${intro}/g, intro)
+                .replace(/\${recommendations}/g, recommendationsHtml)
+                .replace(/\${details}/g, detailsHtml)
+                .replace(/\${colors}/g, colorsHtml)
+                .replace(/\${tipsTitle}/g, tipsTitle)
+                .replace(/\${tipsContent}/g, tipsText);
 
             // 빈 섹션 숨기기
             if (!detailsHtml) finalHtml = finalHtml.replace(/<div class="section" id="detailsSection">.*?<\/div>/s, '');
             if (!colorsHtml) finalHtml = finalHtml.replace(/<div class="section" id="colorsSection">.*?<\/div>/s, '');
-            if (!tipsTitle) finalHtml = finalHtml.replace(/<div class="section" id="tipsSection">.*?<\/div>/s, '');
             
             // 최종 HTML 문서 생성
             const fullHtml = `
