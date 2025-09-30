@@ -240,7 +240,7 @@
 
         <div class="section">
             <div class="knitting-tip">
-                <h3 class="knitting-tip-title">${tipsTitle}</h3>
+                <h3 class="knitting-tip-title">🌟 뚱이’s 뜨개팁 🐷✂️</h3>
                 <p>${tipsContent}</p>
             </div>
         </div>
@@ -255,7 +255,7 @@
             function findSectionContent(startDelimiter, endDelimiter) {
                 const startIndex = lines.findIndex(line => line.includes(startDelimiter));
                 if (startIndex === -1) return null;
-                const endIndex = lines.findIndex((line, index) => index > startIndex && line.includes(endDelimiter));
+                const endIndex = endDelimiter ? lines.findIndex((line, index) => index > startIndex && line.includes(endDelimiter)) : -1;
                 const end = endIndex !== -1 ? endIndex : lines.length;
                 return lines.slice(startIndex + 1, end).join('\n').trim();
             }
@@ -292,12 +292,7 @@
 
             // 뜨개팁
             const tipsContent = findSectionContent('🌟 뚱이’s 뜨개팁 🐷✂️', '');
-            let tipsTitle = '🌟 뚱이’s 뜨개팁 🐷✂️';
-            let tipsText = '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
-            if (tipsContent) {
-                const tipsLines = tipsContent.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-                tipsText = tipsLines.join('<br>');
-            }
+            let tipsText = tipsContent ? tipsContent.replace('추천바늘 :', '<strong>추천바늘 :</strong>').replace(/<br>/g, '\n').replace(/\n/g, '<br>') : '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
             
             // 템플릿 채우기
             let finalHtml = document.getElementById('productTemplate').innerHTML;
@@ -307,7 +302,6 @@
                 .replace(/\${recommendations}/g, recommendationsHtml)
                 .replace(/\${details}/g, detailsHtml)
                 .replace(/\${colors}/g, colorsHtml)
-                .replace(/\${tipsTitle}/g, tipsTitle)
                 .replace(/\${tipsContent}/g, tipsText);
 
             // 빈 섹션 숨기기
