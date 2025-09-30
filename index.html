@@ -260,89 +260,93 @@
     </div>
 
     <div id="productTemplate" style="display:none;">
-        <h1>${title}</h1>
-        <p class="intro">${intro}</p>
-        
-        <div class="section">
-            <h2 class="section-title">이런 분께 추천드려요!</h2>
-            <ul class="recommend-list">${recommendations}</ul>
-        </div>
-
-        <div class="section" id="detailsSection">
-            <h2 class="section-title">상품 상세 정보</h2>
-            <div class="product-details">
-                <h3>🧰 구성</h3>
-                ${details}
+        <div class="container">
+            <h1>${title}</h1>
+            <p class="intro">${intro}</p>
+            
+            <div class="section">
+                <h2 class="section-title">이런 분께 추천드려요!</h2>
+                <ul class="recommend-list">${recommendations}</ul>
             </div>
-        </div>
 
-        <div class="section" id="colorsSection">
-            <h2 class="section-title">🧵 컬러 라인업</h2>
-            <div class="color-grid">${colors}</div>
-        </div>
+            <div class="section" id="detailsSection">
+                <h2 class="section-title">상품 상세 정보</h2>
+                <div class="product-details">
+                    <h3>🧰 구성</h3>
+                    ${details}
+                </div>
+            </div>
 
-        <div class="section">
-            <div class="knitting-tip">
-                <h3 class="knitting-tip-title">🌟 뚱이’s 뜨개팁 🐷✂️</h3>
-                <p>${tipsContent}</p>
+            <div class="section" id="colorsSection">
+                <h2 class="section-title">🧵 컬러 라인업</h2>
+                <div class="color-grid">${colors}</div>
+            </div>
+
+            <div class="section">
+                <div class="knitting-tip">
+                    <h3 class="knitting-tip-title">🌟 뚱이’s 뜨개팁 🐷✂️</h3>
+                    <p>${tipsContent}</p>
+                </div>
             </div>
         </div>
     </div>
     
     <footer>
-        <p>BUILD NO: 0.0.1</p>
+        <p>BUILD NO: v240930-5</p>
     </footer>
 
     <script>
         function generateAndDownloadHtml() {
             const rawText = document.getElementById('productDataInput').value;
-            const textContent = rawText.replace(/\n\s*\n/g, '\n').replace(/\s*([🔹🧶🧵🌟-])\s*/g, '$1').trim();
-            const sections = textContent.split(/(?=🧶|🧵|🌟|- 상품 상세 정보 -)/).map(s => s.trim());
+            const lines = rawText.split('\n');
 
-            let title = sections.shift();
-            let intro = sections.shift().replace(/🧶.*/, '');
-
-            let recommendations = [];
-            let details = {};
-            let colors = [];
-            let tips = {};
-
-            sections.forEach(section => {
-                if (section.startsWith('🧶이런 분께 추천드려요!')) {
-                    const content = section.replace('🧶이런 분께 추천드려요!', '').trim();
-                    recommendations = content.split('-').filter(s => s.trim()).map(s => s.trim());
-                } else if (section.startsWith('- 상품 상세 정보 -')) {
-                    const content = section.replace('- 상품 상세 정보 -', '').replace('🧰 구성', '').trim();
-                    const detailPairs = content.split('🔹').filter(s => s.trim());
-                    detailPairs.forEach(pair => {
-                        const [label, value] = pair.split(':').map(s => s.trim());
-                        if (label && value) {
-                            details[label] = value;
-                        }
-                    });
-                } else if (section.startsWith('🧵 컬러 라인업')) {
-                    const content = section.replace('🧵 컬러 라인업', '').trim();
-                    colors = content.split('🔹').filter(s => s.trim()).map(s => s.trim());
-                } else if (section.startsWith('🌟 뚱이’s 뜨개팁 🐷✂️')) {
-                    const content = section.replace('🌟 뚱이’s 뜨개팁 🐷✂️', '').trim();
-                    tips.title = '🌟 뚱이’s 뜨개팁 🐷✂️';
-                    tips.content = content;
-                }
-            });
-
-            // HTML 템플릿 채우기
-            let recommendationsHtml = recommendations.map(item => `<li>${item}</li>`).join('');
-            let detailsHtml = '';
-            for (const [label, value] of Object.entries(details)) {
-                detailsHtml += `<div class="detail-item"><span class="label">🔹 ${label}</span><span>${value}</span></div>`;
+            function findSection(startDelimiter, endDelimiter) {
+                const startIndex = lines.findIndex(line => line.includes(startDelimiter));
+                if (startIndex === -1) return null;
+                const endIndex = lines.findIndex((line, index) => index > startIndex && line.includes(endDelimiter));
+                const end = endIndex !== -1 ? endIndex : lines.length;
+                return lines.slice(startIndex + 1, end).join('\n').trim();
             }
-            let colorsHtml = colors.map(color => `<div class="color-item">${color}</div>`).join('');
-            let tipsText = tips.content ? tips.content.replace('추천바늘 :', '<strong>추천바늘 :</strong>').replace(/\n/g, '<br>') : '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
 
+            // 제목과 소개글
+            const title = lines[0].trim();
+            const introEndIndex = lines.findIndex(line => line.includes('🧶이런 분께 추천드려요!'));
+            const intro = lines.slice(1, introEndIndex).join('<br>').trim();
+            
+            // 추천 리스트
+            const recommendationsContent = findSection('🧶이런 분께 추천드려요!', '- 상품 상세 정보 -');
+            const recommendations = recommendationsContent ? recommendationsContent.split('\n').filter(item => item.trim().length > 0).map(item => item.replace(/^- /, '').trim()) : [];
+            const recommendationsHtml = recommendations.map(item => `<li>${item}</li>`).join('');
+            
+            // 상세 정보
+            const detailsContent = findSection('🧰 구성', '🧵 컬러 라인업') || findSection('🧰 구성', '🌟 뚱이’s 뜨개팁 🐷✂️');
+            let detailsHtml = '';
+            if (detailsContent) {
+                const detailRegex = /🔹(.*?)\s*:\s*(.*?)(?=🔹|\n|$)/g;
+                let match;
+                while ((match = detailRegex.exec(detailsContent)) !== null) {
+                    const label = match[1].trim();
+                    const value = match[2].trim();
+                    if (label && value) {
+                        detailsHtml += `<div class="detail-item"><span class="label">🔹 ${label}</span><span>${value}</span></div>`;
+                    }
+                }
+            }
+
+            // 컬러 라인업
+            const colorsContent = findSection('🧵 컬러 라인업', '🌟 뚱이’s 뜨개팁 🐷✂️');
+            const colors = colorsContent ? colorsContent.split('🔹').filter(item => item.trim().length > 0).map(item => item.trim()) : [];
+            const colorsHtml = colors.map(color => `<div class="color-item">${color}</div>`).join('');
+
+            // 뜨개팁
+            const tipsContent = findSection('🌟 뚱이’s 뜨개팁 🐷✂️', '');
+            let tipsText = tipsContent ? tipsContent.replace('추천바늘 :', '<strong>추천바늘 :</strong>').replace(/\n/g, '<br>') : '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
+            
+            // 템플릿 채우기
             let finalHtml = document.getElementById('productTemplate').innerHTML;
             finalHtml = finalHtml
                 .replace(/\${title}/g, title)
-                .replace(/\${intro}/g, intro.replace(/\n/g, '<br>'))
+                .replace(/\${intro}/g, intro)
                 .replace(/\${recommendations}/g, recommendationsHtml)
                 .replace(/\${details}/g, detailsHtml)
                 .replace(/\${colors}/g, colorsHtml)
@@ -363,10 +367,7 @@
     <style>${document.querySelector('style').innerHTML}</style>
 </head>
 <body>
-    <div class="container">${finalHtml}</div>
-    <footer>
-        <p>BUILD NO: 0.0.1-5</p>
-    </footer>
+    ${finalHtml}
 </body>
 </html>
             `;
