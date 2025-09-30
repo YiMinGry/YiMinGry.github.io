@@ -192,15 +192,6 @@
             font-size: 1.05em;
             text-align: justify;
         }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #e0d8d5;
-            color: #a0a0a0;
-            font-size: 0.85em;
-        }
     </style>
 </head>
 <body>
@@ -290,33 +281,46 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         function generateAndDownloadHtml() {
             const rawText = document.getElementById('productDataInput').value;
-            
-            function extractSection(text, startDelimiter, endDelimiter) {
-                const startIndex = text.indexOf(startDelimiter);
-                if (startIndex === -1) return null;
-                const afterStart = text.substring(startIndex + startDelimiter.length).trim();
-                const endIndex = afterStart.indexOf(endDelimiter);
-                if (endIndex === -1 || endDelimiter === '') {
+            const sections = rawText.split(/(?=🧶|🧵|🌟|- 상품 상세 정보 -)/g).map(s => s.trim()).filter(s => s.length > 0);
+
+            let title = '';
+            let intro = '';
+            let recommendations = [];
+            let detailsHtml = '';
+            let colorsHtml = '';
+            let tipsText = '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
+
+            const findSectionContent = (startDelim, endDelim) => {
+                const startIdx = rawText.indexOf(startDelim);
+                if (startIdx === -1) return null;
+                const afterStart = rawText.substring(startIdx + startDelim.length).trim();
+                const endIdx = endDelim ? afterStart.indexOf(endDelim) : -1;
+                if (endIdx === -1 || endDelim === '') {
                     return afterStart;
                 }
-                return afterStart.substring(0, endIndex).trim();
+                return afterStart.substring(0, endIdx).trim();
+            };
+
+            const allSections = rawText.split(/(?=🧶|🧵|🌟|- 상품 상세 정보 -)/g).map(s => s.trim());
+
+            title = allSections[0].split('\n')[0].trim();
+            intro = allSections[0].replace(title, '').replace(/🧶.*/, '').trim().replace(/\n/g, '<br>');
+
+            const recSection = allSections.find(s => s.startsWith('🧶이런 분께 추천드려요!'));
+            if (recSection) {
+                const content = recSection.replace('🧶이런 분께 추천드려요!', '').trim();
+                recommendations = content.split('-').filter(s => s.trim()).map(s => s.trim());
+                recommendationsHtml = recommendations.map(item => `<li>${item}</li>`).join('');
             }
-
-            const title = rawText.substring(0, rawText.indexOf('🧶')).trim();
-            const intro = extractSection(rawText, title, '🧶이런 분께 추천드려요!');
-
-            const recommendationsContent = extractSection(rawText, '🧶이런 분께 추천드려요!', '- 상품 상세 정보 -');
-            const recommendations = recommendationsContent ? recommendationsContent.split('-').filter(item => item.trim().length > 0).map(item => item.replace(/^- /, '').trim()) : [];
-            const recommendationsHtml = recommendations.map(item => `<li>${item}</li>`).join('');
-
-            const detailsContent = extractSection(rawText, '🧰 구성', '🧵 컬러 라인업') || extractSection(rawText, '🧰 구성', '🌟 뚱이’s 뜨개팁 🐷✂️');
-            let detailsHtml = '';
-            if (detailsContent) {
-                const detailPairs = detailsContent.split('🔹').filter(item => item.trim().length > 0);
+            
+            const detailsSection = allSections.find(s => s.includes('🧰 구성'));
+            if (detailsSection) {
+                const detailsContent = detailsSection.substring(detailsSection.indexOf('🧰 구성') + 4).trim();
+                const detailPairs = detailsContent.split('🔹').filter(s => s.trim());
                 detailPairs.forEach(pair => {
                     const [label, value] = pair.split(':').map(s => s.trim());
                     if (label && value) {
@@ -325,17 +329,23 @@
                 });
             }
 
-            const colorsContent = extractSection(rawText, '🧵 컬러 라인업', '🌟 뚱이’s 뜨개팁 🐷✂️');
-            const colors = colorsContent ? colorsContent.split('🔹').filter(item => item.trim().length > 0).map(item => item.trim()) : [];
-            const colorsHtml = colors.map(color => `<div class="color-item">${color}</div>`).join('');
+            const colorsSection = allSections.find(s => s.includes('🧵 컬러 라인업'));
+            if (colorsSection) {
+                const colorsContent = colorsSection.replace('🧵 컬러 라인업', '').trim();
+                const colors = colorsContent.split('🔹').filter(s => s.trim()).map(s => s.trim());
+                colorsHtml = colors.map(color => `<div class="color-item">${color}</div>`).join('');
+            }
 
-            const tipsContent = extractSection(rawText, '🌟 뚱이’s 뜨개팁 🐷✂️', '');
-            let tipsText = tipsContent ? tipsContent.replace('추천바늘 :', '<strong>추천바늘 :</strong>').replace(/\n/g, '<br>') : '이 상품에 대한 특별한 뜨개팁이 곧 추가됩니다!';
-            
+            const tipsSection = allSections.find(s => s.includes('🌟 뚱이’s 뜨개팁 🐷✂️'));
+            if (tipsSection) {
+                const content = tipsSection.replace('🌟 뚱이’s 뜨개팁 🐷✂️', '').trim();
+                tipsText = content.replace('추천바늘 :', '<strong>추천바늘 :</strong>').replace(/\n/g, '<br>');
+            }
+
             let finalHtml = document.getElementById('productTemplate').innerHTML;
             finalHtml = finalHtml
                 .replace(/\${title}/g, title)
-                .replace(/\${intro}/g, intro.replace(/\n/g, '<br>'))
+                .replace(/\${intro}/g, intro)
                 .replace(/\${recommendations}/g, recommendationsHtml)
                 .replace(/\${details}/g, detailsHtml)
                 .replace(/\${colors}/g, colorsHtml)
@@ -372,4 +382,3 @@
     </script>
 </body>
 </html>
-
