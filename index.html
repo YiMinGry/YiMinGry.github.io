@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>뚱이네 실가게 - 상품 페이지 생성기</title>
     <style>
+        /* 기존 스타일은 동일 */
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Sans+KR:wght@300;400;700&display=swap');
 
         body {
@@ -34,7 +35,7 @@
 
         #productDataInput {
             width: 90%;
-            height: 300px;
+            height: 500px;
             padding: 15px;
             border: 1px solid #e6c5bb;
             border-radius: 8px;
@@ -42,6 +43,7 @@
             font-family: 'Noto Sans KR', sans-serif;
             resize: vertical;
             margin-bottom: 15px;
+            text-align: left;
         }
 
         button {
@@ -198,45 +200,28 @@
 
     <div class="input-form">
         <h2>제품 데이터 입력</h2>
-        <p>아래 입력창에 상품 데이터를 JSON 형식으로 복사해 붙여넣으세요.</p>
-        <textarea id="productDataInput" placeholder='{
-  "title": "오로라 멜로우 (600g)",
-  "intro": "은은하게 반짝이는 은색 펄이 더해진 매력적인 실, <strong>오로라 멜로우</strong>를 소개합니다. <br> 비스코스 혼방으로 피부에 닿는 감촉이 매우 부드럽고 가벼워 편안함을 선사합니다.",
-  "recommendations": [
-    "과하지 않은 은은한 반짝임으로 작품에 포인트를 주고 싶은 분",
-    "부드러운 감촉의 의류나 숄, 블랭킷을 만들고 싶은 분",
-    "하나의 볼로 넉넉한 사이즈의 작품을 완성하고 싶은 분"
-  ],
-  "details": {
-    "material": "비스코스, 폴리에스터, 나일론, 은색펄",
-    "weight": "600g",
-    "length": "39,000cm",
-    "thickness": "0.2mm",
-    "ply": "3합"
-  },
-  "colors": [
-    "01. 로맨틱샤워", "02. 밀키코랄", "03. 누드블로썸", "04. 라일락크림", "05. 우디크림",
-    "06. 모브시나몬", "07. 크림마르살라", "08. 파우더레이크", "09. 달빛고요", "10. 체리블렌드",
-    "11. 플러피블루밍", "12. 선셋웨이브", "13. 브릭로즈", "14. 클라우드티", "15. 문글로우",
-    "16. 블루밍나잇", "17. 모닝포레스트", "18. 써니민트"
-  ],
-  "tips": {
-    "title": "🌟 뚱이’s 뜨개팁 🐷✂️",
-    "content": "<strong>추천바늘 :</strong> 코바늘 4~5호 / 대바늘 2.25~3.5mm<br>실이 가늘고 부드러워 섬세한 무늬 표현에 적합하며, 성글게 짜도 자연스러운 멋이 살아납니다."
-  }
-}'></textarea><br>
+        <p>아래 입력창에 상품 데이터를 복사해 붙여넣으세요. (예시가 자동으로 입력되어 있습니다.)</p>
+        <textarea id="productDataInput" placeholder='
+오로라 멜로우(600g)
+
+은은하게 반짝이는 은색펄이 더해진 매력적인 실, 오로라 멜로우를 소개합니다. 비스코스 혼방으로 피부에 닿는 감촉이 매우 부드럽고 가벼워 편안함을 선사합니다. 600g 대용량 구성으로 숄이나 블랭킷, 의류 등 어떤 작품이든 넉넉하게 완성할 수 있습니다. 다채로운 컬러 라인업으로 나만의 특별한 작품을 만들어보세요.🧶이런 분께 추천드려요!
+- 과하지 않은 은은한 반짝임으로 작품에 포인트를 주고 싶은 분
+- 부드러운 감촉의 의류나 숄, 블랭킷을 만들고 싶은 분
+- 하나의 볼로 넉넉한 사이즈의 작품을 완성하고 싶은 분
+
+- 상품 상세 정보 - 🧰 구성🔹소재 : 비스코스, 폴리에스터, 나일론, 은색펄🔹중량 : 600g🔹길이 : 39,000cm🔹굵기 : 0.2mm🔹합수 : 3합🧵 컬러 라인업🔹01.로맨틱샤워🔹02.밀키코랄🔹03.누드블로썸🔹04.라일락크림🔹05.우디크림🔹06.모브시나몬🔹07.크림마르살라🔹08.파우더레이크🔹09.달빛고요🔹10.체리블렌드🔹11.플러피블루밍🔹12.선셋웨이브🔹13.브릭로즈🔹14.클라우드티🔹15.문글로우🔹16.블루밍나잇🔹17.모닝포레스트🔹18.써니민트🌟 뚱이’s 뜨개팁 🐷✂️
+추천바늘 : 코바늘 4~5호 / 대바늘 2.25~3.5mm
+실이 가늘고 부드러워 섬세한 무늬 표현에 적합하며, 성글게 짜도 자연스러운 멋이 살아납니다. 은은한 펄감이 더해져 있어 밋밋할 수 있는 기본 뜨개 기법에도 특별한 포인트를 줄 수 있습니다. 추천 바늘 사이즈 내에서 게이지를 조절하여 원하는 편물의 느낌을 찾아보세요.'></textarea><br>
         <button onclick="generateAndDownloadHtml()">HTML 생성 및 다운로드</button>
     </div>
 
     <div id="productTemplate" style="display:none;">
         <h1>${title}</h1>
         <p class="intro">${intro}</p>
-
         <div class="section">
             <h2 class="section-title">이런 분께 추천드려요!</h2>
             <ul class="recommend-list">${recommendations}</ul>
         </div>
-
         <div class="section">
             <h2 class="section-title">상품 상세 정보</h2>
             <div class="product-details">
@@ -248,12 +233,10 @@
                 <div class="detail-item"><span class="label">🔹 합수</span><span>${ply}</span></div>
             </div>
         </div>
-
         <div class="section">
             <h2 class="section-title">🧵 컬러 라인업</h2>
             <div class="color-grid">${colors}</div>
         </div>
-
         <div class="section">
             <div class="knitting-tip">
                 <h3 class="knitting-tip-title">${tipsTitle}</h3>
@@ -264,28 +247,74 @@
 
     <script>
         function generateAndDownloadHtml() {
-            try {
-                const jsonData = document.getElementById('productDataInput').value;
-                const productData = JSON.parse(jsonData);
+            const rawText = document.getElementById('productDataInput').value;
+            const lines = rawText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            // 데이터 추출
+            const title = lines[0];
+            const intro = lines.slice(1, lines.indexOf('🧶이런 분께 추천드려요!')).join('<br>');
+            
+            const recommendationsStart = lines.indexOf('🧶이런 분께 추천드려요!') + 1;
+            const recommendationsEnd = lines.indexOf('- 상품 상세 정보 -');
+            const recommendations = lines.slice(recommendationsStart, recommendationsEnd)
+                                         .filter(line => line.startsWith('- '))
+                                         .map(line => line.substring(2));
+            
+            const detailsStart = lines.indexOf('🧰 구성') + 1;
+            const detailsEnd = lines.indexOf('🧵 컬러 라인업');
+            const detailsText = lines.slice(detailsStart, detailsEnd).join(' ');
+            const details = {};
+            const detailRegex = /🔹(.*?)\s*:\s*(.*?)(?=🔹|\s*$)/g;
+            let match;
+            while ((match = detailRegex.exec(detailsText)) !== null) {
+                const label = match[1].trim();
+                const value = match[2].trim();
+                if (label === '소재') details.material = value;
+                else if (label === '중량') details.weight = value;
+                else if (label === '길이') details.length = value;
+                else if (label === '굵기') details.thickness = value;
+                else if (label === '합수') details.ply = value;
+            }
 
-                let recommendationsHtml = productData.recommendations.map(item => `<li>${item}</li>`).join('');
-                let colorsHtml = productData.colors.map(color => `<div class="color-item">${color}</div>`).join('');
-                
-                const templateHtml = document.getElementById('productTemplate').innerHTML;
-                let finalHtml = templateHtml
-                    .replace(/\${title}/g, productData.title)
-                    .replace(/\${intro}/g, productData.intro)
-                    .replace(/\${recommendations}/g, recommendationsHtml)
-                    .replace(/\${material}/g, productData.details.material)
-                    .replace(/\${weight}/g, productData.details.weight)
-                    .replace(/\${length}/g, productData.details.length)
-                    .replace(/\${thickness}/g, productData.details.thickness)
-                    .replace(/\${ply}/g, productData.details.ply)
-                    .replace(/\${colors}/g, colorsHtml)
-                    .replace(/\${tipsTitle}/g, productData.tips.title)
-                    .replace(/\${tipsContent}/g, productData.tips.content);
+            const colorsStart = lines.indexOf('🧵 컬러 라인업') + 1;
+            const colorsEnd = lines.indexOf('🌟 뚱이’s 뜨개팁 🐷✂️');
+            const colorsText = lines.slice(colorsStart, colorsEnd).join(' ');
+            const colors = colorsText.split('🔹').filter(item => item.trim().length > 0).map(item => item.trim());
 
-                const fullHtml = `
+            const tipsStart = lines.indexOf('🌟 뚱이’s 뜨개팁 🐷✂️') + 1;
+            const tipsContent = lines.slice(tipsStart).join('<br>');
+            const tipsTitle = lines[tipsStart - 1].substring(lines[tipsStart-1].indexOf('🌟')).trim();
+            
+            const productData = {
+                title,
+                intro,
+                recommendations,
+                details,
+                colors,
+                tips: {
+                    title: tipsTitle,
+                    content: tipsContent
+                }
+            };
+            
+            let recommendationsHtml = productData.recommendations.map(item => `<li>${item}</li>`).join('');
+            let colorsHtml = productData.colors.map(color => `<div class="color-item">${color}</div>`).join('');
+
+            const templateHtml = document.getElementById('productTemplate').innerHTML;
+            let finalHtml = templateHtml
+                .replace(/\${title}/g, productData.title)
+                .replace(/\${intro}/g, productData.intro)
+                .replace(/\${recommendations}/g, recommendationsHtml)
+                .replace(/\${material}/g, productData.details.material)
+                .replace(/\${weight}/g, productData.details.weight)
+                .replace(/\${length}/g, productData.details.length)
+                .replace(/\${thickness}/g, productData.details.thickness)
+                .replace(/\${ply}/g, productData.details.ply)
+                .replace(/\${colors}/g, colorsHtml)
+                .replace(/\${tipsTitle}/g, productData.tips.title)
+                .replace(/\${tipsContent}/g, productData.tips.content);
+
+            const fullHtml = `
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -298,19 +327,15 @@
     <div class="container">${finalHtml}</div>
 </body>
 </html>
-                `;
-
-                const blob = new Blob([fullHtml], { type: 'text/html' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${productData.title.replace(/ /g, '_')}.html`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-            } catch (e) {
-                alert('데이터 형식이 올바르지 않습니다. JSON 형식을 확인해 주세요.');
-            }
+            `;
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${productData.title.replace(/ /g, '_')}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
         }
     </script>
 </body>
